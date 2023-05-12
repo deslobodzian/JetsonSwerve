@@ -13,16 +13,23 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 find_package(phoenix-pro REQUIRED)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(Threads REQUIRED)
+find_package(wpilib REQUIRED)
 
-FILE(GLOB_RECURSE SRC_FILES src/*.c*)
-FILE(GLOB_RECURSE HDR_FILES include/*.h*)
+FILE(GLOB_RECURSE SRC_FILES src/*.cpp)
+FILE(GLOB_RECURSE HDR_FILES include/*.hpp)
 
-add_executable(${PROJECT_NAME} ${HDR_FILES} ${SRC_FILES})
+ADD_EXECUTABLE(${PROJECT_NAME} ${HDR_FILES} ${SRC_FILES})
+
 add_definitions(-DUNIT_LIB_DISABLE_FMT -DUNIT_LIB_ENABLE_IOSTREAM)
 
 target_link_libraries(
         ${PROJECT_NAME}
+        Eigen3::Eigen
         phoenix-pro
         Threads::Threads
+        wpimath
+        ntcore
+        wpiutil
 )
