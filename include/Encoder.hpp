@@ -12,7 +12,7 @@ public:
     float get_velocity();
     float get_rot_count();
 private:
-    float abs_pos_rad;
-    float quad_pos_rad;
+    float abs_pos_rad_;
+    float quad_pos_rad_;
 
 };
