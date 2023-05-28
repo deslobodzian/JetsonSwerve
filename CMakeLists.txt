@@ -1,38 +1,32 @@
 cmake_minimum_required(VERSION 3.6)
-
 project(JetsonSwerve)
-set(CMAKE_C_COMPILER $ENV{JETSON_TOOLCHAIN}/bin/aarch64-none-linux-gnu-gcc)
-set(CMAKE_CXX_COMPILER $ENV{JETSON_TOOLCHAIN}/bin/aarch64-none-linux-gnu-g++)
 
+# Set the compiler options for the device
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Og")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-# Prefer -lpthread
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
-#find_package(phoenix-pro REQUIRED)
+# Find required packages for development
 #find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-#find_package(Threads REQUIRED)
-#find_package(wpilib REQUIRED)
+find_package(wpimath REQUIRED)
+find_package(phoenix-pro REQUIRED)
 
-#FILE(GLOB_RECURSE SRC_FILES src/*.cpp)
-#FILE(GLOB_RECURSE HDR_FILES include/*.hpp)
+# Set the source files for the development build
+file(GLOB_RECURSE SRC_FILES src/*.cpp)
 
-#ADD_EXECUTABLE(${PROJECT_NAME} ${HDR_FILES} ${SRC_FILES})
-ADD_EXECUTABLE(${PROJECT_NAME} src/main.cpp)
+# Set the header files for the development build
+file(GLOB_RECURSE HDR_FILES include/*.hpp)
 
-#add_definitions(-DUNIT_LIB_DISABLE_FMT -DUNIT_LIB_ENABLE_IOSTREAM)
-
+add_executable(${PROJECT_NAME} ${HDR_FILES} ${SRC_FILES})
+# Link required libraries for the deployment build
 target_link_libraries(
-        ${PROJECT_NAME}
-#        Eigen3::Eigen
-#        phoenix-pro
-#        Threads::Threads
-#        wpimath
-#        ntcore
-#        wpiutil
+    ${PROJECT_NAME}
+    phoenix-pro
+    ntcore
+    wpimath
+    wpiutil
 )
