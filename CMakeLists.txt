@@ -28,17 +28,7 @@ file(GLOB_RECURSE SRC_FILES src/*.cpp)
 file(GLOB_RECURSE HDR_FILES include/*.hpp)
 
 add_executable(${PROJECT_NAME} ${HDR_FILES} ${SRC_FILES})
-# Include the toolchain's sysroot for library search paths
-link_directories(
-        /home/prometheus/toolchain/aarch64--glibc--stable-2021.11-1/aarch64-buildroot-linux-gnu/sysroot/usr/lib/phoenix-pro
-)
 
-# Include the toolchain's sysroot for header search paths
-target_include_directories(
-        ${PROJECT_NAME}
-        PRIVATE
-        /home/prometheus/toolchain/aarch64--glibc--stable-2021.11-1/aarch64-buildroot-linux-gnu/sysroot/usr/include/phoenix-pro
-)
 # Link required libraries for the deployment build
 target_link_libraries(
         ${PROJECT_NAME}
