@@ -15,7 +15,7 @@ echo "Building and configuring CMake"
 mkdir build_eigen
 cd build_eigen
 
-cmake .. 
+cmake .. -DCMAKE_TOOLCHAIN_FILE=$JETSON_TOOLCHAIN/JetsonToolchain.cmake
 sudo make install -j16
 
 echo "Installation complete removing temp files"
