@@ -5,7 +5,7 @@ mkdir ~/toolchain/
 cd ~/toolchain/
 TOOLCHAIN_NAME=aarch64-unknown-linux-gnu
 
-wget https://github.com/deslobodzian/JetsonSwerve/releases/download/toolchian/${TOOLCHAIN_NAME}.tar.gz
+wget https://github.com/deslobodzian/JetsonSwerve/releases/download/toolchain/${TOOLCHAIN_NAME}.tar.gz
 tar -xf ${TOOLCHAIN_NAME}.tar.gz
 rm ${TOOLCHAIN_NAME}.tar.gz
 
