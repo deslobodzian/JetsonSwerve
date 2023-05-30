@@ -37,7 +37,7 @@ else
 fi
 
 # Build WPILib
-make -j16
+make -j$(nproc)
 make install
 
 # Create the destination folder for the libraries if it doesn't exist

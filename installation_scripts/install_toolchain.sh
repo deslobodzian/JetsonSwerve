@@ -3,11 +3,13 @@
 echo "Downloading "
 mkdir ~/toolchain/
 cd ~/toolchain/
-wget https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2021.11-1.tar.bz2
-tar -xf aarch64--glibc--stable-2021.11-1.tar.bz2
-rm aarch64--glibc--stable-2021.11-1.tar.bz2
-cd aarch64--glibc--stable-2021.11-1/
+TOOLCHAIN_NAME=aarch64-unknown-linux-gnu
 
+wget https://github.com/deslobodzian/JetsonSwerve/releases/download/toolchian/${TOOLCHAIN_NAME}.tar.gz
+tar -xf ${TOOLCHAIN_NAME}.tar.gz
+rm ${TOOLCHAIN_NAME}.tar.gz
+
+cd ${TOOLCHAIN_NAME}
 # Get the absolute path to the toolchain installation directory
 TOOLCHAIN_DIR=$(pwd)
 
@@ -16,7 +18,7 @@ echo "export JETSON_TOOLCHAIN=${TOOLCHAIN_DIR}" >> ~/.bashrc
 
 # Create a CMake toolchain file for Jetson
 TOOLCHAIN_FILE="${TOOLCHAIN_DIR}/JetsonToolchain.cmake"
-INSTALL_PREFIX="${TOOLCHAIN_DIR}/aarch64-buildroot-linux-gnu/sysroot"
+INSTALL_PREFIX="${TOOLCHAIN_DIR}/${TOOLCHAIN_NAME}/sysroot"
 
 echo "export JETSON_TOOLCHAIN_FILE=\"${TOOLCHAIN_FILE}\"" >> ~/.bashrc
 echo "export JETSON_INSTALL_PREFIX=\"${INSTALL_PREFIX}\"" >> ~/.bashrc
@@ -32,21 +34,21 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
 
-set(CMAKE_FIND_ROOT_PATH ${TOOLCHAIN_DIR}/aarch64-buildroot-linux-gnu/sysroot)
-set(CMAKE_SYSROOT ${TOOLCHAIN_DIR}/aarch64-buildroot-linux-gnu/sysroot)
+set(CMAKE_FIND_ROOT_PATH ${TOOLCHAIN_DIR}/${TOOLCHAIN_NAME}/sysroot)
+set(CMAKE_SYSROOT ${TOOLCHAIN_DIR}/${TOOLCHAIN_NAME}/sysroot)
 
 set(CMAKE_TYPE_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-set(CMAKE_C_COMPILER ${TOOLCHAIN_DIR}/bin/aarch64-buildroot-linux-gnu-gcc)
-set(CMAKE_CXX_COMPILER ${TOOLCHAIN_DIR}/bin/aarch64-buildroot-linux-gnu-g++)
+set(CMAKE_C_COMPILER ${TOOLCHAIN_DIR}/bin/${TOOLCHAIN_NAME}-gcc)
+set(CMAKE_CXX_COMPILER ${TOOLCHAIN_DIR}/bin/${TOOLCHAIN_NAME}-g++)
 
 if (NOT CMAKE_C_COMPILER OR NOT CMAKE_CXX_COMPILER)
     message(FATAL_ERROR "Can't find C/C++ cross compiler for Jetson")
 endif()
 
-set(CMAKE_AR ${TOOLCHAIN_DIR}/bin/aarch64-buildroot-linux-gnu-ar CACHE FILEPATH "" FORCE)
-set(CMAKE_RANLIB ${TOOLCHAIN_DIR}/bin/aarch64-buildroot-linux-gnu-ranlib)
-set(CMAKE_LINKER ${TOOLCHAIN_DIR}/bin/aarch64-buildroot-linux-gnu-ld)
+set(CMAKE_AR ${TOOLCHAIN_DIR}/bin/${TOOLCHAIN_NAME}-ar CACHE FILEPATH "" FORCE)
+set(CMAKE_RANLIB ${TOOLCHAIN_DIR}/bin/${TOOLCHAIN_NAME}-ranlib)
+set(CMAKE_LINKER ${TOOLCHAIN_DIR}/bin/${TOOLCHAIN_NAME}-ld)
 
 set(CMAKE_EXE_LINKER_FLAGS_INIT -Wl,--allow-shlib-undefined)
 
@@ -64,7 +66,7 @@ tar -xf zlib-1.2.13.tar.gz
 cd zlib-1.2.13
 mkdir build && cd build
 cmake -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN_FILE}" -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" ..
-make -j16
+make -j$(nproc)
 make install
 
 echo "zlib installed, exiting folder"
@@ -76,10 +78,10 @@ tar -xf openssl-1.1.1l.tar.gz
 cd openssl-1.1.1l
 
 ./Configure linux-aarch64 \
-    --cross-compile-prefix=${TOOLCHAIN_DIR}/bin/aarch64-buildroot-linux-gnu- \
+    --cross-compile-prefix=${TOOLCHAIN_DIR}/bin/${TOOLCHAIN_NAME}- \
     --prefix=${INSTALL_PREFIX}
 
-make -j16
+make -j$(nproc)
 make install
 
 echo "Installed OpenSSL to toolchain, exiting folder"
@@ -91,7 +93,7 @@ tar -xf libssh-0.9.7.tar.gz
 cd libssh-0.9.7/
 mkdir build && cd build
 cmake -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN_FILE}" -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" ..
-make -j16
+make -j$(nproc)
 make install
 echo "Installed LIBSSH to toolchain, exiting folder"
 cd ../..
