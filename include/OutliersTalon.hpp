@@ -3,7 +3,7 @@
 //
 #pragma once
 
-#include "ctre/phoenixpro/TalonFX.hpp"
+#include <ctre/phoenixpro/TalonFX.hpp>
 
 using namespace ctre::phoenixpro;
 

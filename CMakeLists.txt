@@ -21,11 +21,15 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(wpimath REQUIRED)
 find_package(phoenix-pro REQUIRED)
 
-# Set the source files for the development build
+# Set the source files for build
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
 
-# Set the header files for the development build
+# Set the header files for build
 file(GLOB_RECURSE HDR_FILES include/*.hpp)
+
+# Include the directories
+include_directories(include)
+
 
 add_executable(${PROJECT_NAME} ${HDR_FILES} ${SRC_FILES})
 

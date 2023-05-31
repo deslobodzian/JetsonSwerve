@@ -6,7 +6,7 @@
 
 #include <frc/EigenCore.h>
 #include <frc/system/LinearSystemLoop.h>
-#include "OutliersTalon.hpp"
+#include <OutliersTalon.hpp>
 
 
 class DiffSwerveModule {

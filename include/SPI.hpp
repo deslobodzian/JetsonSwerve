@@ -11,7 +11,7 @@
 #include <sys/ioctl.h>
 #include <linux/spi/spidev.h>
 
-#include "utils.hpp"
+#include <utils.hpp>
 
 #define SPI_DEVICE "/dev/spidev.0.0"
 #define SPI_MODE SPI_MODE_0

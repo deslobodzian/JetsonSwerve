@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-
 inline void info(const std::string& msg) {
     std::cout << "[INFO]" << msg << "\n";
 }

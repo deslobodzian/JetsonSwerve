@@ -2,7 +2,7 @@
 // Created by prometheus on 5/12/23.
 //
 
-#include "../include/SPI.hpp"
+#include <SPI.hpp>
 
 SPI::SPI() {
     spi_fd_ = open(SPI_DEVICE, O_RDWR);
