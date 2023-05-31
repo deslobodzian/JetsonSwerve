@@ -1,3 +1,13 @@
+# Ignore build folders
+/build/
+/cmake-build-debug/
+
+# Ignore VSCode folder
+/.vscode/
+
+# Ignore Idea folder
+/.idea/
+
 # Prerequisites
 *.d
 
