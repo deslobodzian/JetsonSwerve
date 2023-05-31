@@ -5,66 +5,67 @@
 #include <PeriodicTask.hpp>
 #include <iostream>
 
-PeriodicTask::PeriodicTask(PeriodicTaskManager* taskManager, float period, std::string name)
-        : _period(std::chrono::duration<float>(period)), _name(std::move(name)) {
-    taskManager->addTask(this);
+PeriodicTask::PeriodicTask(PeriodicTaskManager* task_manager, float period, std::string name)
+        : period_(std::chrono::duration<float>(period)), name_(std::move(name)) {
+    task_manager->add_task(this);
 }
+
 PeriodicTask::~PeriodicTask() {
     stop();
 }
 
 void PeriodicTask::start() {
-    if (_running) {
-        std::cout << "[PeriodicTask] Tried to start " << _name << " but it was already running!\n";
+    if (running_) {
+        std::cout << "[PeriodicTask] Tried to start " << name_ << " but it was already running!\n";
         return;
     }
     init();
-    _running = true;
-    _thread = std::thread(&PeriodicTask::loopFunction, this);
+    running_ = true;
+    thread_ = std::thread(&PeriodicTask::loop_function, this);
 }
 
 void PeriodicTask::stop() {
-    if (!_running) {
-        std::cout << "[PeriodicTask] Tried to stop " << _name << " but it wasn't running!\n";
+    if (!running_) {
+        std::cout << "[PeriodicTask] Tried to stop " << name_ << " but it wasn't running!\n";
         return;
     }
-    _running = false;
-    std::cout << "[PeriodicTask] Waiting for " << _name << " to stop...\n";
-    _thread.join();
+    running_ = false;
+    std::cout << "[PeriodicTask] Waiting for " << name_ << " to stop...\n";
+    thread_.join();
     std::cout << "[PeriodicTask] Done!\n";
     cleanup();
 }
 
-bool PeriodicTask::isLoopOverrun() const {
-    if (_maxPeriod > _period.count() * 1.3f || _maxRuntime > _period.count()) {
-        printf("[PeriodicTask] Warning: Task %s is running slow!\n", _name.c_str());
+bool PeriodicTask::is_loop_overrun() const {
+    if (max_period_ > period_.count() * 1.3f || max_runtime_ > period_.count()) {
+        printf("[PeriodicTask] Warning: Task %s is running slow!\n", name_.c_str());
         return true;
     }
     return false;
 }
 
-void PeriodicTask::printStatus() const {
-    if (!_running) return;
-    if (isLoopOverrun()) {
+void PeriodicTask::print_status() const {
+    if (!running_) return;
+    if (is_loop_overrun()) {
         printf("|%-20s|%6.4f|%6.4f|%6.4f|%6.4f|%6.4f\n",
-                     _name.c_str(), _lastRuntime, _maxRuntime, _period.count(),
-                     _lastPeriodTime, _maxPeriod);
+               name_.c_str(), last_runtime_, max_runtime_, period_.count(),
+               last_period_time_, max_period_);
     } else {
-        printf("|%-20s|%6.4f|%6.4f|%6.4f|%6.4f|%6.4f\n", _name.c_str(),
-               _lastRuntime, _maxRuntime, _period.count(), _lastPeriodTime, _maxPeriod);
+        printf("|%-20s|%6.4f|%6.4f|%6.4f|%6.4f|%6.4f\n", name_.c_str(),
+               last_runtime_, max_runtime_, period_.count(), last_period_time_, max_period_);
     }
 }
 
-void PeriodicTask::clearMax() {
-    _maxPeriod = 0;
-    _maxRuntime = 0;
+void PeriodicTask::clear_max() {
+    max_period_ = 0;
+    max_runtime_ = 0;
 }
 
-void PeriodicTask::loopFunction() {
+void PeriodicTask::loop_function() {
     auto timer_fd = timerfd_create(CLOCK_MONOTONIC, 0);
 
-    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(_period);
-    auto nano_seconds = std::chrono::duration_cast<std::chrono::nanoseconds>(_period - seconds);
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(period_);
+    auto nano_seconds = std::chrono::duration_cast<std::chrono::nanoseconds>(period_ - seconds);
 
     itimerspec timer_spec{};
     timer_spec.it_interval.tv_sec = seconds.count();
@@ -79,50 +80,50 @@ void PeriodicTask::loopFunction() {
 
     auto last_run_time = std::chrono::high_resolution_clock::now();
 
-    while (_running) {
+    while (running_) {
         auto start = std::chrono::high_resolution_clock::now();
         run();
         auto end = std::chrono::high_resolution_clock::now();
 
         std::chrono::duration<float> runtime = end - start;
-        _lastRuntime = runtime.count();
+        last_runtime_ = runtime.count();
 
         std::chrono::duration<float> period = start - last_run_time;
-        _lastPeriodTime = period.count();
+        last_period_time_ = period.count();
 
         last_run_time = start;
 
         ssize_t m = read(timer_fd, &missed, sizeof(missed));
         (void)m;
-        isLoopOverrun();
+        is_loop_overrun();
 
-        std::cout << "Task " << _name << " period: " << _lastPeriodTime << " seconds\n";
+        std::cout << "Task " << name_ << " period: " << last_period_time_ << " seconds\n";
     }
 }
 
-const std::string& PeriodicTask::getName() const {
-    return _name;
+const std::string& PeriodicTask::get_name() const {
+    return name_;
 }
-
 
 PeriodicTaskManager::~PeriodicTaskManager() {
-    stopAll();
+    stop_all();
 }
 
-void PeriodicTaskManager::stopAll() {
-    for (auto &task : _tasks) {
+void PeriodicTaskManager::stop_all() {
+    for (auto& task : tasks_) {
         task->stop();
     }
 }
 
-void PeriodicTaskManager::addTask(PeriodicTask* task) {
-    _tasks.push_back(std::unique_ptr<PeriodicTask>(task));
+void PeriodicTaskManager::add_task(PeriodicTask* task) {
+    tasks_.push_back(std::unique_ptr<PeriodicTask>(task));
 }
 
-void PeriodicTaskManager::printStatus() {
-    for (auto& task : _tasks) {
-        task->printStatus();
-        task->clearMax();
+void PeriodicTaskManager::print_status() {
+    for (auto& task : tasks_) {
+        task->print_status();
+        task->clear_max();
     }
 }
+
 
