@@ -11,11 +11,13 @@
 #include <DriveSubsystem.hpp>
 
 class RobotContainer {
+    friend class RobotRunner;
 public:
     RobotContainer();
-    void initialize_subsystems();
-    void run_subsystems();
-    void cleanup_subsystems();
+    ~RobotContainer();
+    void initialize_robot();
+    void run_robot();
+    void cleanup_robot();
 
 private:
     PeriodicTaskManager task_manager_;
