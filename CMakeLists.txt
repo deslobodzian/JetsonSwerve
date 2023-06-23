@@ -18,7 +18,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 # Find required packages for development
 #find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-find_package(wpimath REQUIRED)
+find_package(wpilib REQUIRED)
 find_package(phoenix-pro REQUIRED)
 
 # Set the source files for build
@@ -30,8 +30,9 @@ file(GLOB_RECURSE HDR_FILES include/*.hpp)
 # Include the directories
 include_directories(include)
 
-
 add_executable(${PROJECT_NAME} ${HDR_FILES} ${SRC_FILES})
+
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -pedantic -Wextra -Werror -Wno-unused-parameter)
 
 # Link required libraries for the deployment build
 target_link_libraries(

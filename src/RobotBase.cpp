@@ -21,6 +21,10 @@ void RobotBase::cleanup() {
 
 }
 
+bool RobotBase::is_running() {
+    return true;
+}
+
 void RobotBase::set_robot_state(const RobotState& new_state) {
     if (state_ != new_state) {
         state_ = new_state;

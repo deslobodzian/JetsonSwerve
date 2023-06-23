@@ -22,5 +22,4 @@ public:
 
 private:
     std::unique_ptr<RobotContainer> robot_container_;
-
 };
