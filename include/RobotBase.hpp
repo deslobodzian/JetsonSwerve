@@ -25,7 +25,7 @@ public:
     virtual void robot_init() = 0;
     virtual void robot_periodic() = 0;
 
-    virtual void is_enabled() = 0;
+    virtual bool is_enabled() = 0;
     virtual void enable_init() = 0;
     virtual void enable_periodic() = 0;
 

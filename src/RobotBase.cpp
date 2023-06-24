@@ -21,6 +21,19 @@ void RobotBase::cleanup() {
 
 }
 
+void RobotBase::enable_init() {
+
+}
+void RobotBase::enable_periodic() {
+
+}
+void RobotBase::disable_init() {
+
+}
+void RobotBase::disable_periodic() {
+
+}
+
 bool RobotBase::is_running() {
     return true;
 }

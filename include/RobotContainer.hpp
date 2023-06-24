@@ -10,10 +10,8 @@
 #include <vector>
 #include <DriveSubsystem.hpp>
 #include <SPISensorBoard.hpp>
-#include <RobotRunner.hpp>
 
 class RobotContainer {
-    friend class RobotRunner;
 public:
     RobotContainer();
     ~RobotContainer();
