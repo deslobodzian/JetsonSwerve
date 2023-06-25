@@ -4,9 +4,12 @@
 #include "RobotRunner.hpp"
 
 RobotRunner::RobotRunner(std::unique_ptr<RobotContainer> robot_container, PeriodicTaskManager* task_manager, float period, std::string name)
-    : RobotBase(task_manager, period, std::move(name)), robot_container_(std::move(robot_container)) {}
+    : RobotBase(task_manager, period, std::move(name)), robot_container_(std::move(robot_container)) {
+        debug("RobotRunner Constructor");
+    }
 
 void RobotRunner::init() {
+    info("Initalizing RobotRunner");
     RobotBase::init();
     robot_container_->initialize_robot();
 }

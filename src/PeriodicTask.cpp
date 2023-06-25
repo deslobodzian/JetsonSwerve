@@ -4,6 +4,7 @@
 
 #include <PeriodicTask.hpp>
 #include <iostream>
+#include <utils.hpp>
 
 PeriodicTask::PeriodicTask(PeriodicTaskManager* task_manager, float period, std::string name)
         : period_(std::chrono::duration<float>(period)), name_(std::move(name)) {
@@ -11,6 +12,7 @@ PeriodicTask::PeriodicTask(PeriodicTaskManager* task_manager, float period, std:
 }
 
 PeriodicTask::~PeriodicTask() {
+    debug("A task was decontructed");
     stop();
 }
 
@@ -37,7 +39,7 @@ void PeriodicTask::stop() {
 }
 
 bool PeriodicTask::is_loop_overrun() const {
-    if (max_period_ > period_.count() * 1.3f || max_runtime_ > period_.count()) {
+    if (last_period_time_ > period_.count() * 1.3f || max_runtime_ > period_.count()) {
         printf("[PeriodicTask] Warning: Task %s is running slow!\n", name_.c_str());
         return true;
     }

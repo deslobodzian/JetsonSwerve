@@ -3,9 +3,12 @@
 //
 
 #include <RobotBase.hpp>
+#include <utils.hpp>
 
 RobotBase::RobotBase(PeriodicTaskManager *task_manager, float period, std::string name)
-    : PeriodicTask(task_manager, period, std::move(name)), state_(RobotState::DISABLED) {}
+    : PeriodicTask(task_manager, period, std::move(name)), state_(RobotState::DISABLED) {
+        debug("RobotBase Constructor");
+    }
 
 void RobotBase::init() {
     if (state_ == RobotState::DISABLED) {

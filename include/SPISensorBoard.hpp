@@ -17,7 +17,7 @@
 #include <cstring>
 #include <mutex>
 
-#define SPI_DEVICE                      "/dev/spidev.0.0"
+#define SPI_DEVICE                      "/dev/spidev0.0"
 #define SPI_MODE                        SPI_MODE_0
 #define SPI_BITS_PER_WORD               8
 #define SPI_SPEED_HZ                    5000000 // 5Mhz

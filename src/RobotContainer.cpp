@@ -15,6 +15,7 @@ void RobotContainer::run_spi_board() {
 }
 
 void RobotContainer::initialize_robot() {
+    info("Creating SPI Task");
     // start spi task at 500 micro seconds
     PeriodicMemberFunction<RobotContainer> spi_task(
         &task_manager_,
@@ -26,9 +27,12 @@ void RobotContainer::initialize_robot() {
 
     spi_task.start();
 
-    for (const auto& subsystem : subsystems_) {
-        subsystem->initialize();
+    for (;;) {
+        sleep(1000000);
     }
+    // for (const auto& subsystem : subsystems_) {
+    //     subsystem->initialize();
+    // }
 }
 
 void RobotContainer::run_robot() {

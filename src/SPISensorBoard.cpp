@@ -87,7 +87,7 @@ uint8_t SPISensorBoard::receive(spi_data_t& data) {
 }
 
 void SPISensorBoard::update_spi() {
-    std::lock_guard<std::mutex> lock(spi_data_mutex_);
+    // std::lock_guard<std::mutex> lock(spi_data_mutex_);
     receive(spi_data_);
 }
 
